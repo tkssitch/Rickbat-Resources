@@ -20,9 +20,9 @@
     {
       "id": "fix002_tool_zip_support",
       "name": "RickBat Manager ZIP Support Update",
-      "version": "1.0",
+      "version": "1.1",
       "description": "Updates the RickBat Manager tool to support ZIP-based fixes.",
-      "notes": "After this update installs, close and reopen the RickBat Manager before installing ZIP fixes.",
+      "notes": "Corrected ZIP support tool update. After this installs, close and reopen the RickBat Manager before installing ZIP fixes.",
       "type": "file_replace",
       "source": "fixes/fix002_tool_zip_support/files/build-switcher.ps1",
       "target": "build-changer/build-switcher.ps1",
