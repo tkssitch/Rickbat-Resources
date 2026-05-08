@@ -1,0 +1,16 @@
+{
+  "build": "RickBat Lite",
+  "manifestVersion": 1,
+  "fixes": [
+    {
+      "id": "fix001_teknoparrot_yml",
+      "name": "TeknoParrot Input Mapping Fix",
+      "version": "1.0",
+      "description": "Updates the RickBat Lite TeknoParrot input mapping file.",
+      "type": "file_replace",
+      "source": "fixes/fix001_teknoparrot_yml/files/teknoparrot.yml",
+      "target": "system/resources/inputmapping/teknoparrot.yml",
+      "backup": true
+    }
+  ]
+}
