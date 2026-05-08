@@ -1,16 +1,21 @@
 {
   "build": "RickBat Lite",
+  "buildId": "rickbat-lite",
   "manifestVersion": 1,
+  "minimumManagerVersion": "1.0",
   "fixes": [
     {
       "id": "fix001_teknoparrot_yml",
       "name": "TeknoParrot Input Mapping Fix",
       "version": "1.0",
       "description": "Updates the RickBat Lite TeknoParrot input mapping file.",
+      "notes": "Use this after RetroBat updates overwrite the custom TeknoParrot input mapping.",
       "type": "file_replace",
       "source": "fixes/fix001_teknoparrot_yml/files/teknoparrot.yml",
       "target": "system/resources/inputmapping/teknoparrot.yml",
-      "backup": true
+      "backup": true,
+      "requires": [],
+      "minToolVersion": "1.0"
     }
   ]
 }
