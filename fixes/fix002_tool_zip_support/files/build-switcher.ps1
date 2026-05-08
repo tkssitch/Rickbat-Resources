@@ -1,4 +1,4 @@
-Add-Type -AssemblyName System.Windows.Forms
+﻿Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -57,7 +57,7 @@ if (-not $Base) {
     exit
 }
 
-$AppVersion = "v2.1"
+$AppVersion = "v2.1.1"
 $BackupRoot = Join-Path $ScriptFolder "backups"
 $DefaultsRoot = Join-Path $ScriptFolder "defaults"
 $LogRoot = Join-Path $ScriptFolder "logs"
@@ -657,7 +657,7 @@ function Install-RickBatFix {
 
 function Check-RickBatFixes {
     try {
-        Set-FixStatus "RickBat Fixes: Checking..." "Downloading fixes.json from GitHub..." 5
+        Set-FixStatus "RickBat Updates: Checking..." "Downloading update manifest from GitHub..." 5
 
         $manifest = Get-RickBatFixManifest
         $missing = @(Get-MissingRickBatFixes -Manifest $manifest)
@@ -667,30 +667,30 @@ function Check-RickBatFixes {
         $installedCount = $total - $missingCount
 
         if ($missingCount -eq 0) {
-            Set-FixStatus "RickBat Fixes: $installedCount / $total installed" "RickBat Lite is up to date." 100
-            Show-Message "RickBat Lite fixes are up to date.`r`n`r`nInstalled: $installedCount / $total" "Fix Check Complete" ([System.Windows.Forms.MessageBoxIcon]::Information)
+            Set-FixStatus "RickBat Updates: $installedCount / $total installed" "RickBat Lite is up to date." 100
+            Show-Message "RickBat Lite updates are up to date.`r`n`r`nInstalled: $installedCount / $total" "Update Check Complete" ([System.Windows.Forms.MessageBoxIcon]::Information)
       	  }
         	else {
             	    $percent = 0
 	if ($total -gt 0) {
     	$percent = [int](($installedCount / $total) * 100)
 	}
-	Set-FixStatus "RickBat Fixes: $installedCount / $total installed" "$missingCount update(s) available." $percent
-            Show-Message "$missingCount RickBat fix update(s) available.`r`n`r`nInstalled: $installedCount / $total" "Fixes Available" ([System.Windows.Forms.MessageBoxIcon]::Information)
+	Set-FixStatus "RickBat Updates: $installedCount / $total installed" "$missingCount update(s) available." $percent
+            Show-Message "$missingCount RickBat update(s) available.`r`n`r`nInstalled: $installedCount / $total" "Updates Available" ([System.Windows.Forms.MessageBoxIcon]::Information)
         }
 
         Write-FixLog "Check complete. Installed: $installedCount / $total. Missing: $missingCount"
     }
     catch {
-        Set-FixStatus "RickBat Fixes: Check failed" $_.Exception.Message 0
-        Show-Message "Fix check failed.`r`n`r`n$($_.Exception.Message)" "Fix Check Error" ([System.Windows.Forms.MessageBoxIcon]::Error)
+        Set-FixStatus "RickBat Updates: Check failed" $_.Exception.Message 0
+        Show-Message "Update check failed.`r`n`r`n$($_.Exception.Message)" "Update Check Error" ([System.Windows.Forms.MessageBoxIcon]::Error)
         Write-FixLog "Fix check failed: $($_.Exception.Message)"
     }
 }
 
 function Check-RickBatFixesSilent {
     try {
-        Set-FixStatus "RickBat Fixes: Checking online..." "Checking GitHub for RickBat fixes..." 5
+        Set-FixStatus "RickBat Updates: Checking online..." "Checking GitHub for RickBat updates..." 5
 
         $manifest = Get-RickBatFixManifest
 
@@ -705,31 +705,31 @@ function Check-RickBatFixesSilent {
         $installedCount = $total - $missingCount
 
         if ($total -le 0) {
-            Set-FixStatus "RickBat Fixes: No fixes listed" "Connected, but no fixes were listed in fixes.json." 0
+            Set-FixStatus "RickBat Updates: No updates listed" "Connected, but no updates were listed in the update manifest." 0
             Write-FixLog "Startup check complete. Manifest had no fixes."
             return
         }
 
         if ($missingCount -eq 0) {
-            Set-FixStatus "RickBat Fixes: Up to date ($installedCount / $total)" "RickBat Lite is up to date." 100
+            Set-FixStatus "RickBat Updates: Up to date ($installedCount / $total)" "RickBat Lite is up to date." 100
         }
 	else {
     	  $percent = [int](($installedCount / $total) * 100)
-    	  Set-FixStatus "RickBat Fixes: $missingCount update(s) available" "$installedCount / $total installed. Click Update RickBat Fixes." $percent
+          Set-FixStatus "RickBat Updates: $missingCount update(s) available" "$installedCount / $total installed. Click Install Updates." $percent
 	}
 
         Write-FixLog "Startup fix check complete. Installed: $installedCount / $total. Missing: $missingCount"
     }
     catch {
-        Set-FixStatus "RickBat Fixes: No online connection" "Could not check GitHub. Check internet connection or GitHub access." 0
+        Set-FixStatus "RickBat Updates: No online connection" "Could not check GitHub. Check internet connection or GitHub access." 0
         Write-FixLog "Startup fix check failed: $($_.Exception.Message)"
     }
 }
 
 function Update-RickBatFixes {
     try {
-        Set-FixStatus "RickBat Fixes: Checking..." "Checking GitHub manifest..." 5
-        Write-FixLog "Starting RickBat fix update"
+        Set-FixStatus "RickBat Updates: Checking..." "Checking GitHub manifest..." 5
+        Write-FixLog "Starting RickBat update"
 
         $manifest = Get-RickBatFixManifest
         $missing = @(Get-MissingRickBatFixes -Manifest $manifest)
@@ -737,9 +737,9 @@ function Update-RickBatFixes {
         $total = @($manifest.fixes).Count
 
         if ($missing.Count -eq 0) {
-            Set-FixStatus "RickBat Fixes: $total / $total installed" "RickBat Lite is already up to date." 100
-            Show-Message "No missing fixes found.`r`n`r`nRickBat Lite is already up to date." "No Updates Needed" ([System.Windows.Forms.MessageBoxIcon]::Information)
-            Write-FixLog "No missing fixes found"
+            Set-FixStatus "RickBat Updates: $total / $total installed" "RickBat Lite is already up to date." 100
+            Show-Message "No missing Updates found.`r`n`r`nRickBat Lite is already up to date." "No Updates Needed" ([System.Windows.Forms.MessageBoxIcon]::Information)
+            Write-FixLog "No missing Updates found"
             return
         }
 
@@ -751,12 +751,12 @@ function Update-RickBatFixes {
             $fixNumber = $i + 1
 
             $startPercent = [int]((($fixNumber - 1) / $missing.Count) * 100)
-	    Set-FixStatus "RickBat Fixes: Installing $fixNumber of $($missing.Count)" "$($fix.name)" $startPercent
+	    Set-FixStatus "RickBat Updates: Installing $fixNumber of $($missing.Count)" "$($fix.name)" $startPercent
 
             try {
                 Install-RickBatFix -Fix $fix
 		$donePercent = [int](($fixNumber / $missing.Count) * 100)
-                Set-FixStatus "RickBat Fixes: Installed $fixNumber of $($missing.Count)" "$($fix.name)" $donePercent
+                Set-FixStatus "RickBat Updates: Installed $fixNumber of $($missing.Count)" "$($fix.name)" $donePercent
                 $installedNow++
             }
             catch {
@@ -771,15 +771,15 @@ function Update-RickBatFixes {
         $totalAfter = @($manifestAfter.fixes).Count
         $installedAfter = $totalAfter - $missingAfter.Count
 
-        Set-FixStatus "RickBat Fixes: $installedAfter / $totalAfter installed" "Update complete." 100
+        Set-FixStatus "RickBat Updates: $installedAfter / $totalAfter installed" "Update complete." 100
 
-        Show-Message "RickBat fixes installed successfully.`r`n`r`nInstalled now: $installedNow`r`nFailed: $failedCount`r`nCurrent status: $installedAfter / $totalAfter installed" "Fix Update Complete" ([System.Windows.Forms.MessageBoxIcon]::Information)
+        Show-Message "RickBat Updates installed successfully.`r`n`r`nInstalled now: $installedNow`r`nFailed: $failedCount`r`nCurrent status: $installedAfter / $totalAfter installed" "Update Complete" ([System.Windows.Forms.MessageBoxIcon]::Information)
 
         Write-FixLog "Update complete. Installed now: $installedNow. Failed: $failedCount. Current status: $installedAfter / $totalAfter"
     }
     catch {
-        Set-FixStatus "RickBat Fixes: Update failed" $_.Exception.Message 0
-        Show-Message "RickBat fix update failed.`r`n`r`n$($_.Exception.Message)" "Fix Update Error" ([System.Windows.Forms.MessageBoxIcon]::Error)
+        Set-FixStatus "RickBat Updates: Update failed" $_.Exception.Message 0
+        Show-Message "RickBat update failed.`r`n`r`n$($_.Exception.Message)" "Update Error" ([System.Windows.Forms.MessageBoxIcon]::Error)
         Write-FixLog "Update failed: $($_.Exception.Message)"
     }
 }
@@ -2089,7 +2089,7 @@ $fixGlobalPanel.BackColor = $ColorPanel
 $fixGlobalPanel.BorderStyle = "FixedSingle"
 $script:form.Controls.Add($fixGlobalPanel)
 
-$script:labelFixGlobal = New-UiLabel "RickBat Fixes: Checking online..." 14 5 645 18 8.75 ([System.Drawing.FontStyle]::Bold) $ColorAccent
+$script:labelFixGlobal = New-UiLabel "RickBat Updates: Checking online..." 14 5 645 18 8.75 ([System.Drawing.FontStyle]::Bold) $ColorAccent
 $fixGlobalPanel.Controls.Add($script:labelFixGlobal)
 
 $tabs = New-Object System.Windows.Forms.TabControl
@@ -2134,10 +2134,19 @@ $tabShortcuts.BackColor = $ColorBg
 $tabShortcuts.ForeColor = $ColorText
 $tabs.TabPages.Add($tabShortcuts)
 $tabFixManager = New-Object System.Windows.Forms.TabPage
-$tabFixManager.Text = "Fix Manager"
+$tabFixManager.Text = "Update Manager"
 $tabFixManager.BackColor = $ColorBg
 $tabFixManager.ForeColor = $ColorText
 $tabs.TabPages.Add($tabFixManager)
+
+# Prevent tab content from being cut off on smaller screens or Windows display scaling.
+# If a tab has more content than the visible area, the tab will now scroll instead of hiding controls.
+$tabScrollMinSize = New-Object System.Drawing.Size(0, 560)
+
+foreach ($tabPage in @($tabMain, $tabTools, $tabPerformance, $tabPostUpdate, $tabCommunity, $tabShortcuts, $tabFixManager)) {
+    $tabPage.AutoScroll = $true
+    $tabPage.AutoScrollMinSize = $tabScrollMinSize
+}
 
 $script:cardBuilds = New-Card "Collection / Build Presets" 14 14 635 190 $tabMain
 Refresh-BuildButtons
@@ -2204,12 +2213,12 @@ $cardShortcuts.Controls.Add((New-PremiumButton "Open Builds" 172 98 140 34 { Ope
 $cardShortcuts.Controls.Add((New-PremiumButton "Open Config" 326 98 140 34 { Open-FolderSafe -Path (Split-Path -Parent $LiveConfig) -Label "Live Config Folder" } "Opens live config folder."))
 $cardShortcuts.Controls.Add((New-PremiumButton "Input Reset" 480 98 140 34 { Reset-InputConfig } "Deletes es_input.cfg and restores default."))
 $cardShortcuts.Controls.Add((New-PremiumButton "Exit" 480 148 140 34 { $script:form.Close() } "Closes the manager."))
-$cardFixManager = New-Card "RickBat Lite Fix Manager" 14 14 635 255 $tabFixManager
+$cardFixManager = New-Card "RickBat Lite Update Manager" 14 14 635 255 $tabFixManager
 
-$script:labelFixStatus = New-UiLabel "RickBat Fixes: Checking online..." 18 48 580 24 10 ([System.Drawing.FontStyle]::Bold) $ColorAccent
+$script:labelFixStatus = New-UiLabel "RickBat Updates: Checking online..." 18 48 580 24 10 ([System.Drawing.FontStyle]::Bold) $ColorAccent
 $cardFixManager.Controls.Add($script:labelFixStatus)
 
-$script:labelFixCurrent = New-UiLabel "Checking GitHub for available RickBat fixes..." 18 75 580 38 8.75 ([System.Drawing.FontStyle]::Regular) $ColorMuted
+$script:labelFixCurrent = New-UiLabel "Checking GitHub for available RickBat updates..." 18 75 580 38 8.75 ([System.Drawing.FontStyle]::Regular) $ColorMuted
 $cardFixManager.Controls.Add($script:labelFixCurrent)
 
 $progressLabel = New-UiLabel "Progress" 18 120 160 18 8.5 ([System.Drawing.FontStyle]::Bold) $ColorMuted
@@ -2223,9 +2232,9 @@ $script:progressFix.Maximum = 100
 $script:progressFix.Value = 0
 $cardFixManager.Controls.Add($script:progressFix)
 
-$cardFixManager.Controls.Add((New-PremiumButton "Check Fixes" 18 185 180 42 { Check-RickBatFixes } "Checks GitHub for available RickBat Lite fixes."))
-$cardFixManager.Controls.Add((New-PremiumButton "Update RickBat Fixes" 220 185 180 42 { Update-RickBatFixes } "Downloads and installs missing RickBat Lite fixes."))
-$cardFixManager.Controls.Add((New-PremiumButton "Open Fix Log" 422 185 180 42 { Open-FileSafe -Path $FixManagerLog -Label "Fix Manager Log" } "Opens fix-manager.log."))
+$cardFixManager.Controls.Add((New-PremiumButton "Check Updates" 18 185 180 42 { Check-RickBatFixes } "Checks GitHub for available RickBat Lite updates."))
+$cardFixManager.Controls.Add((New-PremiumButton "Install Updates" 220 185 180 42 { Update-RickBatFixes } "Downloads and installs available RickBat Lite updates."))
+$cardFixManager.Controls.Add((New-PremiumButton "Open Update Log" 422 185 180 42 { Open-FileSafe -Path $FixManagerLog -Label "Update Manager Log" } "Opens update log."))
 
 $bottomPanel = New-Object System.Windows.Forms.Panel
 $bottomPanel.Location = New-Object System.Drawing.Point(20, 680)
